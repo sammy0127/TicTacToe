@@ -5,14 +5,16 @@ requires tkinter version 8.6 or greater
 """
 import tkinter as tk
 from tkinter import font
+from typing import NamedTuple
 
 
 class TicTacToeBoard(tk.Tk):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
         self.title("Tic Tac Toe!")
         self._cells = {}
-        # self._create_board_display(self)
+        self._create_board_display()
+        self._create_board_grid()
 
     def _create_board_display(self):
         display_frame = tk.Frame(master=self)
@@ -22,13 +24,14 @@ class TicTacToeBoard(tk.Tk):
             text="Ready?",
             font=font.Font(size=28, weight="bold"),
         )
+        self.display.pack()
 
     def _create_board_grid(self):
         grid_frame = tk.Frame(master=self)
         grid_frame.pack()
         for row in range(3):
             self.rowconfigure(row, weight=1, minsize=50)
-            self.columnconfigure(row, weight=1, minsize=75)
+            self.columnconfigure(row, weight=1, minsize=50)
             for col in range(3):
                 button = tk.Button(
                     master=grid_frame,
@@ -37,7 +40,7 @@ class TicTacToeBoard(tk.Tk):
                     fg="black",
                     width=3,
                     height=2,
-                    highlightbackground="lightblue",
+                    highlightbackground="blue",
                 )
                 self._cells[button] = (row, col)
                 button.grid(
@@ -47,6 +50,17 @@ class TicTacToeBoard(tk.Tk):
                     pady=5,
                     sticky='nsew'
                 )
+
+
+class Player(NamedTuple):
+    label: str
+    color: str
+
+
+class Move(NamedTuple):
+    row: int
+    col: int
+    label: str = ""
 
 
 def main():
