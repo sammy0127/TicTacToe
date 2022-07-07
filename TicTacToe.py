@@ -67,6 +67,7 @@ class TicTacToeBoard(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Tic Tac Toe!")
+        self['bg'] ='blue'
         self._cells = {}
         self._create_board_display()
         self._create_board_grid()
@@ -83,6 +84,7 @@ class TicTacToeBoard(tk.Tk):
 
     def _create_board_grid(self):
         grid_frame = tk.Frame(master=self)
+        grid_frame['bg'] = 'blue'
         grid_frame.pack()
         for row in range(3):
             self.rowconfigure(row, weight=1, minsize=50)
