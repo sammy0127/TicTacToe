@@ -41,7 +41,7 @@ class TicTacToeGame:
     def _setup_board(self):
         self._current_moves = [
             [Move(row, col) for col in range(self.board_size)]
-            for row in range[self.board_size]
+            for row in range(self.board_size)
         ]
         self._winning_combos = self._get_winning_combos()
 
@@ -61,6 +61,25 @@ class TicTacToeGame:
         move_was_not_played = self._current_moves[row][col].label == ""
         no_winner = not self._has_winner
         return no_winner and move_was_not_played
+
+    def process_move(self, move):
+        """Process the current move and check if it is a win"""
+        row, col = move.row, move.col
+        self._current_moves[row][col] = move
+        for combo in self._winning_combos:
+            results = set(
+                self._current_moves[n][m].label
+                for n, m in combo
+            )
+            is_win = (len(results) == 1) and ("" not in results)
+            if is_win:
+                self._has_winner = True
+                self.winner_combo = combo
+                break
+
+    def has_winner(self):
+        """return True if the game has a winner"""
+        return self._has_winner
 
 
 class TicTacToeBoard(tk.Tk):
@@ -88,7 +107,7 @@ class TicTacToeBoard(tk.Tk):
         grid_frame.pack()
         for row in range(3):
             self.rowconfigure(row, weight=1, minsize=50)
-            self.columnconfigure(row, weight=1, minsize=50)
+            self.columnconfigure(row, weight=1, minsize=75)
             for col in range(3):
                 button = tk.Button(
                     master=grid_frame,
@@ -110,6 +129,12 @@ class TicTacToeBoard(tk.Tk):
 
 
 def main():
+    # print out contents of _current_moves and _winning_combos to check contents.
+    game = TicTacToeGame()
+    print(game._current_moves)
+    print()
+    print(game._winning_combos)
+
     board = TicTacToeBoard()
     board.mainloop()
 
