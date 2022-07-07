@@ -98,7 +98,7 @@ class TicTacToeBoard(tk.Tk):
     def __init__(self, game):
         super().__init__()
         self.title("Tic Tac Toe!")
-        self['bg'] ='blue'
+        # self['bg'] ='blue'
         self._cells = {}
         self._game = game
         self._create_board_display()
@@ -109,14 +109,14 @@ class TicTacToeBoard(tk.Tk):
         display_frame.pack(fill=tk.X)
         self.display = tk.Label(
             master=display_frame,
-            text="Ready?",
+            text="Lets Play!",
             font=font.Font(size=28, weight="bold"),
         )
         self.display.pack()
 
     def _create_board_grid(self):
         grid_frame = tk.Frame(master=self)
-        grid_frame['bg'] = 'blue'
+        # grid_frame['bg'] = 'blue'
         grid_frame.pack()
         for row in range(self._game.board_size):
             self.rowconfigure(row, weight=1, minsize=50)
@@ -129,9 +129,10 @@ class TicTacToeBoard(tk.Tk):
                     fg="black",
                     width=3,
                     height=2,
-                    highlightbackground="blue",
+                    # highlightbackground="blue",
                 )
                 self._cells[button] = (row, col)
+                button.bind("<ButtonPress-1>", self.play)
                 button.grid(
                     row=row,
                     column=col,
@@ -160,6 +161,21 @@ class TicTacToeBoard(tk.Tk):
                 msg = f"{self._game.current_player.label}'s turn!"
                 self._update_display(msg)
 
+    def _update_button(self, clicked_btn):
+        clicked_btn.config(text=self._game.current_player.label)
+        clicked_btn.config(fg=self._game.current_player.color)
+
+    def _update_display(self, msg, color='black'):
+        self.display['text'] = msg
+        self.display['fg'] = color
+
+    def _highlight_cells(self):
+        for button, coordinates in self._cells.items():
+            print(self._game.winner_combo)
+            if coordinates in self._game.winner_combo:
+                print(coordinates)
+                button["highlightbackground"] = 'red'
+
 
 def main():
     # print out contents of _current_moves and _winning_combos to check contents.
@@ -167,6 +183,7 @@ def main():
     print(game._current_moves)
     print()
     print(game._winning_combos)
+    print()
 
     board = TicTacToeBoard(game)
     board.mainloop()
