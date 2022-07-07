@@ -93,6 +93,14 @@ class TicTacToeGame:
         """return toggled player"""
         self.current_player = next(self._players)
 
+    def reset_game(self):
+        """Reset game state to play again"""
+        for row, row_content in enumerate(self._current_moves):
+            for col, _ in enumerate(row_content):
+                row_content[col] = Move(row, col)
+        self._has_winner = False
+        self.winner_combo = []
+
 
 class TicTacToeBoard(tk.Tk):
     def __init__(self, game):
@@ -101,6 +109,7 @@ class TicTacToeBoard(tk.Tk):
         # self['bg'] ='blue'
         self._cells = {}
         self._game = game
+        self._create_menu()
         self._create_board_display()
         self._create_board_grid()
 
@@ -170,21 +179,33 @@ class TicTacToeBoard(tk.Tk):
         self.display['fg'] = color
 
     def _highlight_cells(self):
+        # print(self._cells.items())
         for button, coordinates in self._cells.items():
-            print(self._game.winner_combo)
             if coordinates in self._game.winner_combo:
-                print(coordinates)
-                button["highlightbackground"] = 'red'
+                # print(self._game.winner_combo)
+                # print(coordinates)
+                button["bg"] = 'red'
+
+    def _create_menu(self):
+        menu_bar = tk.Menu(master=self)
+        self.config(menu=menu_bar)
+        file_menu = tk.Menu(master=menu_bar)
+        file_menu.add_command(
+            label="Play Again",
+            command=self.reset_board,
+        )
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=quit)
+        menu_bar.add_cascade(label="Options", menu=file_menu)
 
 
 def main():
     # print out contents of _current_moves and _winning_combos to check contents.
     game = TicTacToeGame()
-    print(game._current_moves)
-    print()
-    print(game._winning_combos)
-    print()
-
+    # print(game._current_moves)
+    # print()
+    # print(game._winning_combos)
+    # print()
     board = TicTacToeBoard(game)
     board.mainloop()
 
