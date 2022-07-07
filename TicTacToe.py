@@ -20,7 +20,7 @@ class Move(NamedTuple):
     label: str = ""
 
 
-BOARD_SIZE = 3
+BOARD_SIZE = 4
 DEFAULT_PLAYERS = (
     Player(label='X', color='blue'),
     Player(label='O', color='green'),
@@ -162,7 +162,7 @@ class TicTacToeBoard(tk.Tk):
                 self._update_display(msg="Tied Game!", color='red')
             elif self._game.has_winner():
                 self._highlight_cells()
-                msg = f'Player "{self._game.current_player.label}" Won!'
+                msg = f'Player {self._game.current_player.label} Won!'
                 color = self._game.current_player.color
                 self._update_display(msg, color)
             else:
@@ -197,6 +197,15 @@ class TicTacToeBoard(tk.Tk):
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=quit)
         menu_bar.add_cascade(label="Options", menu=file_menu)
+
+    def reset_board(self):
+        """Reset the games board to play again"""
+        self._game.reset_game()
+        self._update_display(f"{self._game.current_player.label} goes first!")
+        for button in self._cells.keys():
+            button.config(bg="lightgray")
+            button.config(text="")
+            button.config(fg="black")
 
 
 def main():
