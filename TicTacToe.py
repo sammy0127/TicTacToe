@@ -179,11 +179,8 @@ class TicTacToeBoard(tk.Tk):
         self.display['fg'] = color
 
     def _highlight_cells(self):
-        # print(self._cells.items())
         for button, coordinates in self._cells.items():
             if coordinates in self._game.winner_combo:
-                # print(self._game.winner_combo)
-                # print(coordinates)
                 button["bg"] = 'red'
 
     def _create_menu(self):
@@ -209,12 +206,7 @@ class TicTacToeBoard(tk.Tk):
 
 
 def main():
-    # print out contents of _current_moves and _winning_combos to check contents.
     game = TicTacToeGame()
-    # print(game._current_moves)
-    # print()
-    # print(game._winning_combos)
-    # print()
     board = TicTacToeBoard(game)
     board.mainloop()
 
