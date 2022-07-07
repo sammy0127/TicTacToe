@@ -89,13 +89,18 @@ class TicTacToeGame:
         )
         return no_winner and all(played_moves)
 
+    def toggle_player(self):
+        """return toggled player"""
+        self.current_player = next(self._players)
+
 
 class TicTacToeBoard(tk.Tk):
-    def __init__(self):
+    def __init__(self, game):
         super().__init__()
         self.title("Tic Tac Toe!")
         self['bg'] ='blue'
         self._cells = {}
+        self._game = game
         self._create_board_display()
         self._create_board_grid()
 
@@ -113,10 +118,10 @@ class TicTacToeBoard(tk.Tk):
         grid_frame = tk.Frame(master=self)
         grid_frame['bg'] = 'blue'
         grid_frame.pack()
-        for row in range(3):
+        for row in range(self._game.board_size):
             self.rowconfigure(row, weight=1, minsize=50)
             self.columnconfigure(row, weight=1, minsize=75)
-            for col in range(3):
+            for col in range(self._game.board_size):
                 button = tk.Button(
                     master=grid_frame,
                     text="",
@@ -135,6 +140,26 @@ class TicTacToeBoard(tk.Tk):
                     sticky='nsew'
                 )
 
+    def play(self, event):
+        """Handle a players move"""
+        clicked_btn = event.widget
+        row, col = self._cells[clicked_btn]
+        move = Move(row, col, self._game.current_player.label)
+        if self._game.is_valid_move(move):
+            self._update_button(clicked_btn)
+            self._game.process_move(move)
+            if self._game.is_tied():
+                self._update_display(msg="Tied Game!", color='red')
+            elif self._game.has_winner():
+                self._highlight_cells()
+                msg = f'Player "{self._game.current_player.label}" Won!'
+                color = self._game.current_player.color
+                self._update_display(msg, color)
+            else:
+                self._game.toggle_player()
+                msg = f"{self._game.current_player.label}'s turn!"
+                self._update_display(msg)
+
 
 def main():
     # print out contents of _current_moves and _winning_combos to check contents.
@@ -143,7 +168,7 @@ def main():
     print()
     print(game._winning_combos)
 
-    board = TicTacToeBoard()
+    board = TicTacToeBoard(game)
     board.mainloop()
 
 
